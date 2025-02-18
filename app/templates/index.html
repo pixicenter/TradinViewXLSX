@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Procesare Date din TradingView</title>
+    <script src="https://unpkg.com/htmx.org@1.9.6"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.min.css">
+    <style>
+        body { max-width: 800px; margin: 20px auto; }
+    </style>
+</head>
+<body>
+    <h2>Procesare Date din TradingView</h2>
+    
+    <form id="upload-form"
+      hx-post="/upload/"
+      hx-encoding="multipart/form-data"
+      hx-target="#upload-status"
+      hx-trigger="submit">
+  <label for="csv-files">Alege fișierele CSV:</label>
+  <input type="file" id="csv-files" name="files" multiple required>
+  <button type="submit">Încărcare</button>
+</form>
+
+<div id="upload-status">
+  <!-- Răspunsul  de la server (cu overwritten / newly_created) se va afișa aici -->
+</div>
+
+    
+<div id="loading-indicator" class="hidden"></div>
+
+<button id="process-btn"
+        hx-post="/process/"
+        hx-target="#process-status"
+        hx-indicator="#loading-indicator"
+        hx-on::after-request="htmx.trigger('#file-list', 'refresh'); htmx.trigger('#log-content', 'refresh')">
+    Începe Procesarea
+</button>
+<div id="process-status"></div>
+
+    
+    <h3>Fișiere Generatate</h3>
+    <div id="file-list" hx-get="/list_files/" hx-trigger="load, refresh" hx-target="#file-list" hx-swap="innerHTML"></div>
+    
+    <h3>Log Erori</h3>
+    <button hx-get="/log" hx-trigger="click, refresh" hx-target="#log-content">Vezi Log</button>
+    <pre id="log-content" hx-get="/log" hx-trigger="refresh"></pre>
+    
+    <h3>Descărcare</h3>
+    <button onclick="downloadAll()">Descărcare Toate</button>
+
+    <script>
+        // După descărcare, facem refresh la pagină:
+        function downloadAll() {
+            fetch("/download_all/")
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Eroare la descărcare fișiere. Cod status: " + response.status);
+                    }
+                    return response.blob();
+                })
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = "output.zip";
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch(err => {
+                    alert(err.message);
+                })
+                .finally(() => {
+                    // După ce inițiem descărcarea, dăm refresh
+                    window.location.reload();
+                });
+        }
+    </script>
+
+</body>
+</html>

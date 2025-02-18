@@ -1,0 +1,4 @@
+output/
+uploads/
+logs/
+__pycache__/

@@ -1,0 +1,8 @@
+[2025-02-18 14:09:07] Start procesare fișiere din folderul 'csv'
+[2025-02-18 14:09:07] ✔ Fișier completat: output/ECONOMICS_GBCPPI.xlsx
+[2025-02-18 14:09:08] ✔ Fișier completat: output/ECONOMICS_GBCPI.xlsx
+[2025-02-18 14:09:09] ✔ Fișier completat: output/ECONOMICS_GBPPI.xlsx
+[2025-02-18 14:09:10] ✔ Fișier completat: output/ECONOMICS_GBFER.xlsx
+[2025-02-18 14:09:10] Eroare: Fișierele CSV 1M / 3M pentru 'ECONOMICS_GBGDPQQ' nu sunt complete.
+[2025-02-18 14:09:10] ✔ Fișier completat: output/ECONOMICS_GBM2.xlsx
+[2025-02-18 14:09:10] Final procesare fișiere.
