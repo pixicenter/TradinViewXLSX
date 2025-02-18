@@ -6,3 +6,6 @@
 [2025-02-18 14:09:10] Eroare: Fișierele CSV 1M / 3M pentru 'ECONOMICS_GBGDPQQ' nu sunt complete.
 [2025-02-18 14:09:10] ✔ Fișier completat: output/ECONOMICS_GBM2.xlsx
 [2025-02-18 14:09:10] Final procesare fișiere.
+[2025-02-19 00:41:17] Start procesare fișiere din folderul 'csv'
+[2025-02-19 00:41:18] ✔ Fișier completat: output/ECONOMICS_USBCOI.xlsx
+[2025-02-19 00:41:18] Final procesare fișiere.

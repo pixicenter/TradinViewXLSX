@@ -96,17 +96,21 @@ def process_files():
     
     try:
         if selected_file_type == "PPI":
-            # Rulăm process_script.py
+            # Rulăm process_script.py adica Full PC Procent
             subprocess.run(["python", "app/process_script.py"], check=True)
             msg = "Procesare PPI finalizată!"
         elif selected_file_type == "GDPQOQYOY":
-            # Rulăm cpi.py (când îl vei crea)
+            # Rulăm gppqoqyoy.py (când îl vei crea)
             subprocess.run(["python", "app/gppqoqyoy.py"], check=True)
             msg = "Procesare GDPQOQYOY finalizată!"
+        elif selected_file_type == "PMIPCNOMINAL":
+            # Rulăm pmipcnominal.py (când îl vei crea)
+            subprocess.run(["python", "app/pmipcnominal.py"], check=True)
+            msg = "Procesare PMI PC Valoare Nominala finalizată!"
         else:
-            # Rulăm altul.py (exemplu)
+            # Rulăm momyoy.py (exemplu)
             subprocess.run(["python", "app/momyoy.py"], check=True)
-            msg = "Procesare MOMYOYL finalizată!"
+            msg = "Procesare MOM YOY finalizată!"
         
         return JSONResponse(content={"message": msg})
     except subprocess.CalledProcessError as e:
