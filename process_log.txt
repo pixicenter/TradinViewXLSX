@@ -9,3 +9,12 @@
 [2025-02-19 00:41:17] Start procesare fișiere din folderul 'csv'
 [2025-02-19 00:41:18] ✔ Fișier completat: output/ECONOMICS_USBCOI.xlsx
 [2025-02-19 00:41:18] Final procesare fișiere.
+[2025-02-19 00:51:51] Start procesare fișiere din folderul 'csv'
+[2025-02-19 00:51:52] ✔ Fișier completat: output/ECONOMICS_USCPI.xlsx
+[2025-02-19 00:51:52] Final procesare fișiere.
+[2025-02-19 01:07:10] Start procesare fișiere din folderul 'csv'
+[2025-02-19 01:07:11] ✔ Fișier completat: output/ECONOMICS_USBCOI.xlsx
+[2025-02-19 01:07:11] Final procesare fișiere.
+[2025-02-19 01:09:34] Start procesare fișiere din folderul 'csv'
+[2025-02-19 01:09:35] ✔ Fișier completat: output/ECONOMICS_USBCOI.xlsx
+[2025-02-19 01:09:35] Final procesare fișiere.
