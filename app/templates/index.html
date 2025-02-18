@@ -13,23 +13,34 @@
 <body>
     <h2>Procesare Date din TradingView</h2>
     
-    <form id="upload-form"
+    <!-- Form de încărcare CSV + selecție tip fișiere -->
+<form id="upload-form"
       hx-post="/upload/"
       hx-encoding="multipart/form-data"
       hx-target="#upload-status"
       hx-trigger="submit">
-  <label for="csv-files">Alege fișierele CSV:</label>
-  <input type="file" id="csv-files" name="files" multiple required>
-  <button type="submit">Încărcare</button>
+    
+    <label for="csv-files">Alege fișierele CSV:</label>
+    <input type="file" id="csv-files" name="files" multiple required>
+    
+    <!-- Dropdown pentru a selecta tipul de date (PPI, CPI, ALTUL etc.) -->
+    <label for="file_type">Tip fișier:</label>
+    <select id="file_type" name="file_type">
+        <option value="PPI">FULL PC Procent</option>
+        <option value="MOMYOY">MOM YOY</option>
+        <option value="GDPQOQYOY">GDP QOQ YOY</option>
+        
+    </select>
+    
+    <button type="submit">Încărcare</button>
 </form>
 
-<div id="upload-status">
-  <!-- Răspunsul  de la server (cu overwritten / newly_created) se va afișa aici -->
-</div>
+<div id="upload-status"></div>
 
     
 <div id="loading-indicator" class="hidden"></div>
 
+<!-- Buton de procesare -->
 <button id="process-btn"
         hx-post="/process/"
         hx-target="#process-status"
@@ -40,15 +51,37 @@
 <div id="process-status"></div>
 
     
-    <h3>Fișiere Generatate</h3>
-    <div id="file-list" hx-get="/list_files/" hx-trigger="load, refresh" hx-target="#file-list" hx-swap="innerHTML"></div>
-    
-    <h3>Log Erori</h3>
-    <button hx-get="/log" hx-trigger="click, refresh" hx-target="#log-content">Vezi Log</button>
-    <pre id="log-content" hx-get="/log" hx-trigger="refresh"></pre>
+<h3>Fișiere Generatate</h3>
+<div id="file-list" hx-get="/list_files/" hx-trigger="load, refresh" hx-target="#file-list" hx-swap="innerHTML"></div>
+
+<h3>Log Erori</h3>
+<button hx-get="/log" hx-trigger="click, refresh" hx-target="#log-content">Vezi Log</button>
+<!-- <pre id="log-content" hx-get="/log" hx-trigger="refresh"></pre> -->
+<pre id="log-content"
+     hx-get="/log"
+     hx-trigger="refresh"
+     style="max-height: 300px; overflow-y: auto; white-space: pre-wrap;">
+</pre>
     
     <h3>Descărcare</h3>
     <button onclick="downloadAll()">Descărcare Toate</button>
+    <!-- Buton pentru ștergerea fișierelor încărcate și generate -->
+<button id="delete-files-btn"
+hx-delete="/delete_files/"
+hx-target="#delete-status"
+hx-on::afterRequest="htmx.trigger('#file-list', 'refresh'); htmx.trigger('#log-content', 'refresh')">
+Șterge toate fișierele
+</button>
+<div id="delete-status"></div>
+<script>
+    document.addEventListener("htmx:afterSwap", function(event) {
+        if (event.detail.target.id === "log-content") {
+            let logElement = document.getElementById("log-content");
+            logElement.scrollTop = logElement.scrollHeight;  // Derulează la capăt
+        }
+    });
+</script>
+
 
     <script>
         // După descărcare, facem refresh la pagină:
