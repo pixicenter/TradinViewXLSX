@@ -1,29 +1,55 @@
-
 <div class="bg-white p-6 rounded-lg shadow-md">
-    <h2 class="text-2xl font-bold text-gray-800 mb-4" >Instrucțiuni de Utilizare</h2>
-    
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">Instrucțiuni de Utilizare</h2>
+
     <h3 class="text-lg font-semibold text-gray-700 mt-4">1. Încărcarea fișierelor</h3>
     <p class="text-gray-600">
         - Apasă pe butonul <strong>"Alege fișierele CSV"</strong> și selectează fișierele dorite.<br>
         - Selectează tipul de date (PPI, PMI, MOM etc.) din dropdown.<br>
-        - Apasă <strong>"Încărcare"</strong> și așteaptă confirmarea.
+        - Apasă <strong>"Încărcare"</strong> și așteaptă confirmarea.<br>
+        - După fiecare încărcare, fișierele CSV încărcate ulterior precum și fișierele XLSX generate vor fi <span class="text-red-500">șterse</span>.<br>
+        - Lista de fișiere încărcate va fi actualizată automat.
     </p>
 
     <h3 class="text-lg font-semibold text-gray-700 mt-4">2. Procesarea fișierelor</h3>
     <p class="text-gray-600">
-        - După ce fișierele sunt încărcate, apasă pe <strong>"Începe Procesarea"</strong>.<br>
-        - Procesul va începe și după câteva momente fie vor fi generate fișierele fie in log vei vedea erorile.
+        - După încărcarea fișierelor, apasă pe <strong>"Începe Procesarea"</strong>.<br>
+        - Procesul va începe, iar un indicator animat va apărea pe ecran.<br>
+        - La finalizarea procesării:
+          <ul class="list-disc list-inside">
+              <li>Fișierele vor fi generate și listate.</li>
+              <li>Logurile vor mesajele de procesare precum și erorile.</li>
+          </ul>
+        - După procesare, butonul <strong>"Descarcă fișiere"</strong> va fi <span class="text-green-500">activat automat</span> pentru a descărca toate fișierele XLSX generate într-o arhivă ZIP.
     </p>
 
     <h3 class="text-lg font-semibold text-gray-700 mt-4">3. Descărcarea fișierelor</h3>
     <p class="text-gray-600">
-        - Odată procesarea finalizată, fișierele vor apărea în listă.<br>
-        - Poți descărca fiecare fișier generat, dând click pe el sau
-        - Apasă pe <strong>"Descărcare Toate"</strong> pentru a obține arhiva cu fișierele generate.
+        - După procesare, fișierele vor apărea în lista de fișiere generate.<br>
+        - Poți descărca fiecare fișier generat individual sau<br>
+        - Apasă pe <strong>"Descărcare Toate"</strong> pentru a obține arhiva Zip cu toate fișierele XLSX generate.<br>
+        - După descărcare, fișierele rămân disponibile până la ștergerea manuală sau până vor fi încărcate noi fișiere CSV pe server.
     </p>
 
     <h3 class="text-lg font-semibold text-gray-700 mt-4">4. Ștergerea fișierelor</h3>
     <p class="text-gray-600">
-        - Dacă vrei să ștergi fișierele încărcate și generate de pe server, apasă pe <strong>"Șterge Fișiere"</strong>.
+        - Dacă vrei să ștergi toate fișierele încărcate și generate de pe server, apasă pe <strong>"Șterge Fișiere"</strong>.<br>
+        - Se va afișa un mesaj de confirmare pentru ștergere.<br>
+        - După ștergere, butonul <strong>"Descarcă fișiere"</strong> va fi dezactivat.<br>
+        - Dacă încarci noi fișiere după ștergere, procesul începe de la zero.
+    </p>
+
+    <h3 class="text-lg font-semibold text-gray-700 mt-4">5. Log Procesare</h3>
+    <p class="text-gray-600">
+        - În cazul în care apar probleme, verifică secțiunea <strong>Log Procesare</strong>.<br>
+        - Log-ul este actualizat în timp real și conține informații despre succesul sau eșecul procesării.<br>
+        - Dacă întâmpini o eroare, asigură-te că fișierele încărcate sunt corecte și încearcă din nou.<br>
+        - Log-ul este resetat automat la fiecare nouă procesare.<br>
+        - Dacă apar alte Erori, vorbiți cu Raluca pentru a-mi comunica.
     </p>
 </div>
+<br>
+<button class="flex justify-center items-center w-full bg-blue-500 hover:bg-blue-600 py-2 rounded-lg text-white"
+                hx-get="/main" hx-target="#main-content">
+                <i data-lucide="chart-scatter" class="w-6 h-6 md:inline justify-center text-center"></i>
+                <span class="hidden md:inline">&nbsp; Continuă</span>
+        </button>
