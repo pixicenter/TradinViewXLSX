@@ -1,0 +1,46 @@
+<h2 class="text-2xl font-bold text-gray-800 mb-6">Procesare Date din TradingView</h2>
+
+        <!-- Form pentru încărcare -->
+        <form id="upload-form" hx-post="/upload/" hx-encoding="multipart/form-data" hx-target="#upload-status" hx-trigger="submit"
+            class="bg-white p-6 rounded-lg shadow-md space-y-4">
+            
+            <label class="block text-gray-700 font-semibold">Alege fișiere CSV:</label>
+            <input type="file" id="csv-files" name="files" multiple required class="w-full border rounded-lg p-2">
+            
+            <label class="block text-gray-700 font-semibold">Tip fișier:</label>
+            <select id="file_type" name="file_type" class="w-full border rounded-lg p-2">
+                <option value="PPI">FULL PC Procent</option>
+                <option value="PMIPCNOMINAL">PMI PC Valoare Nominala</option>
+                <option value="MOMYOY">MOM YOY</option>
+            </select>
+            
+            <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg">Încărcare</button>
+        </form>
+
+        <div id="upload-status" class="mt-4 text-green-600"></div>
+
+        <!-- Buton pentru procesare -->
+        <button id="process-btn" hx-post="/process/" hx-target="#process-status" hx-indicator="#loading-indicator"
+            hx-on::after-request="htmx.trigger('#file-list', 'refresh'); htmx.trigger('#log-content', 'refresh')"
+            class="w-full mt-6 bg-indigo-500 hover:bg-indigo-600 text-white py-2 rounded-lg">
+            Începe Procesarea
+        </button>
+
+        <div id="process-status" class="mt-4 text-blue-600"></div>
+
+        <!-- Listă fișiere generate -->
+        <h3 class="text-xl font-bold text-gray-800 mt-6">Fișiere Generate</h3>
+        <div id="file-list" hx-get="/list_files/" hx-trigger="load, refresh" hx-target="#file-list"
+            class="bg-white p-4 rounded-lg shadow-md max-h-40 overflow-y-auto"></div>
+
+        <!-- Log Erori -->
+        <h3 class="text-xl font-bold text-gray-800 mt-6">Log Erori</h3>
+        <pre id="log-content" hx-get="/log" hx-trigger="refresh"
+            class="bg-gray-900 text-white p-4 rounded-lg shadow-md max-h-60 overflow-y-auto"></pre>
+
+        <!-- Buton descărcare toate fișierele -->
+        <button onclick="downloadAll()" class="w-full mt-6 bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg">
+            Descărcare Toate
+        </button>
+
+        

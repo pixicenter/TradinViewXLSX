@@ -67,7 +67,7 @@
     <h3>Descărcare</h3>
     <button onclick="downloadAll()">Descărcare Toate</button>
     <!-- Buton pentru ștergerea fișierelor încărcate și generate -->
-<button onclick="delete_files()"id="delete-files-btn"
+<button onclick="delete_files()" id="delete-files-btn"
 hx-delete="/delete_files/"
 hx-target="#delete-status"
 hx-on::afterRequest="htmx.trigger('#file-list', 'refresh'); htmx.trigger('#log-content', 'refresh')">
@@ -112,7 +112,7 @@ hx-on::afterRequest="htmx.trigger('#file-list', 'refresh'); htmx.trigger('#log-c
                     window.location.reload();
                 });
         }
-        // După descărcare, facem refresh la pagină:
+        // După stergere, facem refresh la pagină:
         function delete_files() {
             
                     window.location.reload();

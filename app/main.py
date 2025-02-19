@@ -1,5 +1,6 @@
 from fastapi import FastAPI, UploadFile, Form, BackgroundTasks, File
 from fastapi.responses import FileResponse, JSONResponse, HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from typing import List
 from pathlib import Path
 import shutil
@@ -8,6 +9,10 @@ import zipfile
 import subprocess
 
 app = FastAPI()
+
+# Servește fișierele HTML
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
 
 selected_file_type = None
 
@@ -21,11 +26,24 @@ OUTPUT_FOLDER.mkdir(parents=True, exist_ok=True)
 TEMPLATE_FOLDER.mkdir(parents=True, exist_ok=True)
 
 @app.get("/", response_class=HTMLResponse)
-def home():
-    index_path = Path(__file__).parent / "templates" / "index.html"
-    if index_path.exists():
-        return index_path.read_text()
-    return "<h1>Eroare: Fișierul index.html lipsește.</h1>"
+def serve_index():
+    return FileResponse("static/index.html")
+# def home():
+#     index_path = Path(__file__).parent / "templates" / "index.html"
+#     if index_path.exists():
+#         return index_path.read_text()
+#     return "<h1>Eroare: Fișierul index.html lipsește.</h1>"
+@app.get("/main")
+def serve_main():
+    return FileResponse("static/main.html")
+
+@app.get("/instructions")
+def serve_instructions():
+    return FileResponse("static/instructions.html")
+
+@app.get("/sidebar")
+def serve_main():
+    return FileResponse("static/sidebar.html")
 
 @app.post("/upload/")
 def upload_csv(files: List[UploadFile] = File(...),
@@ -38,6 +56,12 @@ def upload_csv(files: List[UploadFile] = File(...),
     """
     global selected_file_type
     selected_file_type = file_type  # stocăm tipul într-o variabilă globală exemplificativ
+    
+    # 🔹 Ștergem toate fișierele din folderul `csv/`
+    for existing_file in UPLOAD_FOLDER.iterdir():  # Verifică toate fișierele și subfolderele
+        if existing_file.is_file():  # Asigură că ștergem doar fișiere, nu subfoldere
+            existing_file.unlink()  # Șterge fișierul
+
     overwritten_files = []
     new_files = []
     
@@ -67,11 +91,11 @@ def upload_csv(files: List[UploadFile] = File(...),
         new_files_html = "<p><em>Niciun fișier nou.</em></p>"
 
     html_response = f"""
-    <p>Fișiere încărcate cu succes.</p>
-    <p><strong>Rescrise</strong>:</p>
-    {overwritten_html}
-    <p><strong>Noi</strong>:</p>
+    
+    <p><strong>Fișiere încărcate cu succes:</strong></p>
     {new_files_html}
+    <p><strong>Tip Fișier CSV:</strong> {file_type}</p>
+    
     """
     return HTMLResponse(content=html_response)
 

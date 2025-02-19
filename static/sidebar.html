@@ -1,0 +1,54 @@
+
+    <h1 class="text-xl font-bold">TradingView XLSX</h1>
+    <nav class="space-y-2">
+        <button class="w-full bg-blue-500 hover:bg-blue-600 py-2 rounded-lg"
+                hx-get="/main" hx-target="#main-content">Acasă</button>
+
+        <button class="w-full bg-yellow-500 hover:bg-yellow-600 py-2 rounded-lg"
+                hx-get="/instructions" hx-target="#main-content">Instrucțiuni</button>
+        
+                <button class="w-full bg-green-500 hover:bg-green-600 py-2 rounded-lg"
+                hx-get="/main"
+                hx-target="#main-content"
+                hx-on::after-request="htmx.trigger('#log-content', 'refresh')">
+            Vezi Log
+        </button>
+        
+        <div id="delete-button-container" style="display: none;">
+                <button class="w-full bg-red-500 hover:bg-red-600 py-2 rounded-lg"
+                        hx-delete="/delete_files/"
+                        hx-target="#delete-status"
+                        hx-on::after-request="htmx.ajax('GET', '/main', {target: '#main-content'})">
+                    Șterge Fișiere
+                </button>
+            </div>
+
+
+
+        <div id="delete-status" class="mt-4 text-red-600"></div>
+    </nav>
+    
+    <script>
+        function showDeleteButton() {
+            document.getElementById("delete-button-container").style.display = "block";
+        }
+    
+        function hideDeleteButton() {
+            document.getElementById("delete-button-container").style.display = "none";
+        }
+    
+        // Verificăm ce pagină este încărcată și setăm vizibilitatea butonului
+        document.addEventListener("htmx:afterSwap", function(event) {
+            let mainContent = document.getElementById("main-content").innerHTML;
+            
+            if (mainContent.includes("Instrucțiuni")) {
+                hideDeleteButton();
+            } else {
+                showDeleteButton();
+            }
+        });
+    </script>
+    
+    
+    
+    

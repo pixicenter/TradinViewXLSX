@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Procesare Date TradingView</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.6"></script>
+
+</head>
+<body class="bg-gray-100 flex h-screen">
+
+    <!-- Sidebar -->
+    <aside class="w-64 bg-gray-800 text-white p-5 flex flex-col space-y-4">
+        <h1 class="text-xl font-bold">TradingView XLSX</h1>
+        <nav class="space-y-2">
+            <button class="w-full bg-blue-500 hover:bg-blue-600 py-2 rounded-lg" hx-get="/" hx-target="#main-content">Acasă</button>
+            <button class="w-full bg-yellow-500 hover:bg-yellow-600 py-2 rounded-lg" hx-get="/instructions.html" hx-target="#main-content">Instrucțiuni</button>
+            <button class="w-full bg-green-500 hover:bg-green-600 py-2 rounded-lg" hx-get="/log" hx-target="#log-content">Vezi Log</button>
+            <button class="w-full bg-red-500 hover:bg-red-600 py-2 rounded-lg" hx-delete="/delete_files/" hx-target="#delete-status"
+                hx-on::afterRequest="htmx.trigger('#file-list', 'refresh'); htmx.trigger('#log-content', 'refresh')">Șterge Fișiere</button>
+        </nav>
+    </aside>
+
+    <!-- Conținut principal (se va schimba dinamic) -->
+    <main id="main-content" class="flex-1 p-10">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Procesare Date din TradingView</h2>
+
+        <!-- Form pentru încărcare -->
+        <form id="upload-form" hx-post="/upload/" hx-encoding="multipart/form-data" hx-target="#upload-status" hx-trigger="submit"
+            class="bg-white p-6 rounded-lg shadow-md space-y-4">
+            
+            <label class="block text-gray-700 font-semibold">Alege fișiere CSV:</label>
+            <input type="file" id="csv-files" name="files" multiple required class="w-full border rounded-lg p-2">
+            
+            <label class="block text-gray-700 font-semibold">Tip fișier:</label>
+            <select id="file_type" name="file_type" class="w-full border rounded-lg p-2">
+                <option value="PPI">FULL PC Procent</option>
+                <option value="PMIPCNOMINAL">PMI PC Valoare Nominala</option>
+                <option value="MOMYOY">MOM YOY</option>
+            </select>
+            
+            <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg">Încărcare</button>
+        </form>
+
+        <div id="upload-status" class="mt-4 text-green-600"></div>
+
+        <!-- Buton pentru procesare -->
+        <button id="process-btn" hx-post="/process/" hx-target="#process-status" hx-indicator="#loading-indicator"
+            hx-on::after-request="htmx.trigger('#file-list', 'refresh'); htmx.trigger('#log-content', 'refresh')"
+            class="w-full mt-6 bg-indigo-500 hover:bg-indigo-600 text-white py-2 rounded-lg">
+            Începe Procesarea
+        </button>
+
+        <div id="process-status" class="mt-4 text-blue-600"></div>
+
+        <!-- Listă fișiere generate -->
+        <h3 class="text-xl font-bold text-gray-800 mt-6">Fișiere Generate</h3>
+        <div id="file-list" hx-get="/list_files/" hx-trigger="load, refresh" hx-target="#file-list"
+            class="bg-white p-4 rounded-lg shadow-md max-h-40 overflow-y-auto"></div>
+
+        <!-- Log Erori -->
+        <h3 class="text-xl font-bold text-gray-800 mt-6">Log Erori</h3>
+        <pre id="log-content" hx-get="/log" hx-trigger="refresh"
+            class="bg-gray-900 text-white p-4 rounded-lg shadow-md max-h-60 overflow-y-auto"></pre>
+
+        <!-- Buton descărcare toate fișierele -->
+        <button onclick="downloadAll()" class="w-full mt-6 bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg">
+            Descărcare Toate
+        </button>
+
+        <div id="delete-status" class="mt-4 text-red-600"></div>
+    </main>
+
+    <script>
+        document.addEventListener("htmx:afterSwap", function(event) {
+            if (event.detail.target.id === "log-content") {
+                let logElement = document.getElementById("log-content");
+                logElement.scrollTop = logElement.scrollHeight;  // Derulează la capăt
+            }
+        });
+
+        function downloadAll() {
+            fetch("/download_all/")
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Eroare la descărcare fișiere. Cod status: " + response.status);
+                    }
+                    return response.blob();
+                })
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = "output.zip";
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch(err => {
+                    alert(err.message);
+                })
+                .finally(() => {
+                    // După ce inițiem descărcarea, dăm refresh
+                    window.location.reload();
+                });
+        }
+        // După stergere, facem refresh la pagină:
+        function delete_files() {
+            
+            window.location.reload();
+
+}
+    </script>
+
+</body>
+</html>
