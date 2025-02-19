@@ -1,8 +1,0 @@
-[2025-02-19 21:42:14] Start procesare fișiere din folderul 'csv'
-[2025-02-19 21:42:14] Final procesare fișiere.
-[2025-02-19 21:49:02] Start procesare fișiere din folderul 'csv'
-[2025-02-19 21:49:02] Final procesare fișiere.
-[2025-02-19 21:56:51] Start procesare fișiere din folderul 'csv'
-[2025-02-19 21:56:51] Final procesare fișiere.
-[2025-02-19 21:57:01] Start procesare fișiere din folderul 'csv'
-[2025-02-19 21:57:01] Final procesare fișiere.
