@@ -1,46 +1,229 @@
+<!-- Overlay pentru procesare -->
+<div id="loading-overlay" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center hidden">
+    <div class="flex flex-col items-center">
+        <svg class="animate-spin h-12 w-12 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+            viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4l-3 3-3-3h4z">
+            </path>
+        </svg>
+        <p class="text-white mt-2">Se procesează...</p>
+    </div>
+</div>
+
 <h2 class="text-2xl font-bold text-gray-800 mb-6">Procesare Date din TradingView</h2>
 
-        <!-- Form pentru încărcare -->
-        <form id="upload-form" hx-post="/upload/" hx-encoding="multipart/form-data" hx-target="#upload-status" hx-trigger="submit"
-            class="bg-white p-6 rounded-lg shadow-md space-y-4">
-            
-            <label class="block text-gray-700 font-semibold">Alege fișiere CSV:</label>
-            <input type="file" id="csv-files" name="files" multiple required class="w-full border rounded-lg p-2">
-            
-            <label class="block text-gray-700 font-semibold">Tip fișier:</label>
-            <select id="file_type" name="file_type" class="w-full border rounded-lg p-2">
-                <option value="PPI">FULL PC Procent</option>
-                <option value="PMIPCNOMINAL">PMI PC Valoare Nominala</option>
-                <option value="MOMYOY">MOM YOY</option>
-            </select>
-            
-            <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg">Încărcare</button>
-        </form>
+<!-- Form pentru încărcare -->
+<form id="upload-form" hx-post="/upload/" hx-encoding="multipart/form-data" hx-target="#upload-status"
+    hx-trigger="submit" class="bg-white p-6 rounded-lg shadow-md space-y-4">
 
-        <div id="upload-status" class="mt-4 text-green-600"></div>
+    <label class="block text-gray-700 font-semibold">Alege fișiere CSV:</label>
 
-        <!-- Buton pentru procesare -->
-        <button id="process-btn" hx-post="/process/" hx-target="#process-status" hx-indicator="#loading-indicator"
-            hx-on::after-request="htmx.trigger('#file-list', 'refresh'); htmx.trigger('#log-content', 'refresh')"
-            class="w-full mt-6 bg-indigo-500 hover:bg-indigo-600 text-white py-2 rounded-lg">
-            Începe Procesarea
+    <div class="flex items-center space-x-2">
+        <!-- Input File ascuns -->
+        <input type="file" id="csv-files" name="files" multiple required accept=".csv" class="hidden"
+            onchange="updateFileLabel()">
+
+        <!-- Label personalizat ca buton -->
+        <label for="csv-files" class="cursor-pointer bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg">
+            Alege fișiere
+        </label>
+
+        <!-- Afișare nume fișiere -->
+        <span id="file-name" class="text-gray-500">Niciun fișier selectat</span>
+    </div>
+
+    <label class="block text-gray-700 font-semibold mt-4">Tip fișier:</label>
+    <select id="file_type" name="file_type" class="w-full border rounded-lg p-2">
+        <option value="PPI">FULL PC Procent</option>
+        <option value="PMIPCNOMINAL">PMI PC Valoare Nominala</option>
+        <option value="MOMYOY">MOM YOY</option>
+    </select>
+
+    <button type="submit" onclick="submitForm()"
+        class="flex justify-center items-center w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg">
+        <i data-lucide="file-up" class="hidden w-6 h-6 md:inline justify-center text-center"></i>
+        <span class="md:inline">&nbsp; Încarcă fișierele</span>
+    </button>
+</form>
+<!-- Afișare status încărcare -->
+<div id="upload-status" class="mt-4 text-green-600 text-center"></div>
+
+
+<!-- Buton pentru procesare -->
+<button id="process-btn" hx-post="/process/" hx-target="#process-status" hx-indicator="#loading-indicator"
+    hx-on::before-request="showLoadingOverlay()"
+    hx-on::after-request="hideLoadingOverlay();enableDownloadButton(); htmx.trigger('#file-list', 'refresh'); htmx.trigger('#log-content', 'refresh')"
+    class="flex justify-center items-center w-full mt-6 bg-indigo-500 hover:bg-indigo-600 text-white py-2 rounded-lg">
+    <i data-lucide="cog" class="hidden w-6 h-6 md:inline justify-center text-center"></i>
+    <span class="md:inline">&nbsp; Începe Procesarea</span>
+</button>
+
+
+<div id="process-status" class="mt-4 text-green-600 text-center justify-center"></div>
+
+<!-- Listă fișiere generate -->
+<h3 class="text-xl font-bold text-gray-800 mt-6">Fișiere Generate</h3>
+<div id="file-list" hx-get="/list_files/" hx-trigger="load, refresh" hx-target="#file-list"
+    class="bg-white p-4 rounded-lg shadow-md max-h-40 overflow-y-auto"></div>
+
+<!-- Log Erori -->
+<h3 class="text-xl font-bold text-gray-800 mt-6">Log Procesare</h3>
+<pre id="log-content" hx-get="/log" hx-trigger="refresh"
+    class="bg-gray-900 text-white p-4 rounded-lg shadow-md max-h-60 overflow-y-auto w-full max-w-full break-words whitespace-pre-wrap max-w-full"></pre>
+
+<!-- Buton descărcare toate fișierele -->
+<div class="flex gap-4 mt-6">
+    <button id="download-btn" onclick="downloadAll()" disabled
+    class="flex-1 bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg opacity-50 cursor-not-allowed">
+<i data-lucide="cloud-download" class="hidden w-6 h-6 md:inline justify-center text-center"></i>
+<span class="md:inline">&nbsp; Descarcă fișierele</span>
+</button>
+
+<!-- Buton stergere -->
+    <button class="flex-1 bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg" hx-delete="/delete_files/"
+        hx-target="#delete-status-overlay" hx-on::after-request="showDeleteOverlay();">
+        <i data-lucide="trash-2" class="hidden w-6 h-6 md:inline justify-center text-center"></i>
+        <span class="md:inline">&nbsp; Șterge Fișiere</span>
+    </button>
+
+</div>
+
+<div id="delete-overlay" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center hidden">
+    <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+        <h2 class="text-lg font-bold text-gray-700">Fișiere șterse</h2>
+        <div id="delete-status-overlay" class="mt-4 text-gray-600"></div>
+        <button onclick="hideDeleteOverlay()"
+            class="mt-4 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg">
+            OK
         </button>
+    </div>
+</div>
+<script>
+    function showDeleteOverlay() {
+        document.getElementById("delete-overlay").classList.remove("hidden");
+    }
 
-        <div id="process-status" class="mt-4 text-blue-600"></div>
+    function hideDeleteOverlay() {
+        document.getElementById("delete-overlay").classList.add("hidden");
+        htmx.ajax('GET', '/main', { target: '#main-content' }); // Reîncărcăm main.html
+    }
 
-        <!-- Listă fișiere generate -->
-        <h3 class="text-xl font-bold text-gray-800 mt-6">Fișiere Generate</h3>
-        <div id="file-list" hx-get="/list_files/" hx-trigger="load, refresh" hx-target="#file-list"
-            class="bg-white p-4 rounded-lg shadow-md max-h-40 overflow-y-auto"></div>
+    function validateCSVFiles() {
+        let fileInput = document.getElementById("csv-files");
+        let errorMsg = document.getElementById("file-error");
+        let uploadBtn = document.getElementById("upload-btn");
 
-        <!-- Log Erori -->
-        <h3 class="text-xl font-bold text-gray-800 mt-6">Log Erori</h3>
-        <pre id="log-content" hx-get="/log" hx-trigger="refresh"
-            class="bg-gray-900 text-white p-4 rounded-lg shadow-md max-h-60 overflow-y-auto"></pre>
+        // Verifică dacă toate fișierele selectate sunt de tip CSV
+        let isValid = Array.from(fileInput.files).every(file => file.name.endsWith(".csv"));
 
-        <!-- Buton descărcare toate fișierele -->
-        <button onclick="downloadAll()" class="w-full mt-6 bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg">
-            Descărcare Toate
-        </button>
+        if (!isValid) {
+            errorMsg.classList.remove("hidden"); // Afișăm eroarea
+            uploadBtn.disabled = true; // Dezactivăm butonul
+        } else {
+            errorMsg.classList.add("hidden"); // Ascundem eroarea
+            uploadBtn.disabled = false; // Activăm butonul
+        }
+    }
 
-        
+    function showLoadingOverlay() {
+        document.getElementById("loading-overlay").classList.remove("hidden");
+    }
+
+    function hideLoadingOverlay() {
+        document.getElementById("loading-overlay").classList.add("hidden");
+    }
+
+    function hideDeleteStatus() {
+        setTimeout(() => {
+            let deleteStatus = document.getElementById("delete-status");
+            if (deleteStatus) {
+                deleteStatus.innerHTML = ""; // Golește conținutul
+            }
+        }, 10000); // 10 secunde
+    }
+
+    lucide.createIcons(); // Activează iconițele
+</script>
+
+<script>
+    function updateFileLabel() {
+        let fileInput = document.getElementById("csv-files");
+        let fileNameDisplay = document.getElementById("file-name");
+
+        if (fileInput.files.length > 0) {
+            fileNameDisplay.textContent = Array.from(fileInput.files).map(file => file.name).join(", ");
+        } else {
+            fileNameDisplay.textContent = "Niciun fișier selectat";
+        }
+    }
+</script>
+
+<script>
+    function updateFileLabel() {
+        let fileInput = document.getElementById("csv-files");
+        let fileNameDisplay = document.getElementById("file-name");
+
+        if (fileInput.files.length > 0) {
+            fileNameDisplay.textContent = Array.from(fileInput.files).map(file => file.name).join(", ");
+        } else {
+            fileNameDisplay.textContent = "Niciun fișier selectat";
+        }
+    }
+
+    function submitForm() {
+        let form = document.getElementById("upload-form");
+        let formData = new FormData(form);
+
+        fetch("/upload/", {
+            method: "POST",
+            body: formData
+        })
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("upload-status").innerHTML = data;
+                htmx.trigger("#file-list", "refresh"); // Actualizăm lista fișierelor
+            })
+            .catch(error => {
+                document.getElementById("upload-status").innerHTML = `<p class="text-red-500">Eroare la încărcare: ${error}</p>`;
+            });
+    }
+    
+</script>
+<script>
+    function downloadAll() {
+        fetch("/download_all/")
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Eroare la descărcare fișiere. Cod status: " + response.status);
+                }
+                return response.blob();
+            })
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = "output.zip";
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+            })
+            .catch(err => {
+                alert(err.message);
+            });
+    }
+</script>
+<script>
+    function enableDownloadButton() {
+        let downloadBtn = document.getElementById("download-btn");
+        downloadBtn.disabled = false;
+        downloadBtn.classList.remove("opacity-50", "cursor-not-allowed");
+    }
+    function disableDownloadButton() {
+        let downloadBtn = document.getElementById("download-btn");
+        downloadBtn.disabled = true;
+        downloadBtn.classList.add("opacity-50", "cursor-not-allowed");
+    }
+</script>
+

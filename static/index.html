@@ -8,19 +8,22 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/htmx.org@1.9.6"></script>
-</head>
-<body class="bg-gray-100 flex h-screen">
+    <script src="https://unpkg.com/lucide@latest"></script>
 
+</head>
+<body class="bg-gray-100 flex h-screen flex flex-col md:flex-row min-h-screen">
+    
     <!-- Include Sidebar -->
-    <aside id="sidebar" class="w-64 bg-gray-800 text-white p-5 flex flex-col space-y-4">
+    <header id="sidebar" class="bg-gray-800 text-white p-5 md:w-64 md:min-h-screen flex md:flex-col gap-4 items-center md:items-start justify-between md:justify-start">
     <div hx-get="/sidebar" hx-trigger="load" hx-target="#sidebar"></div>
     
-</aside>
-
+    </header>
+     
     <!-- Conținut principal (se schimbă dinamic) -->
-    <main id="main-content" class="flex-1 p-10">
-        <div hx-get="/main" hx-trigger="load" hx-target="#main-content" ></div>
+    <main id="main-content" class="flex-1 p-6 mx-auto max-w-4xl">
+        <div hx-get="/main" hx-trigger="load" hx-target="#main-content" class="w-full max-w-full" ></div>
     </main>
+    
     <script>
         document.addEventListener("htmx:afterSwap", function(event) {
             if (event.detail.target.id === "log-content") {
@@ -28,39 +31,8 @@
                 logElement.scrollTop = logElement.scrollHeight;  // Derulează la capăt
             }
         });
-
-        function downloadAll() {
-            fetch("/download_all/")
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error("Eroare la descărcare fișiere. Cod status: " + response.status);
-                    }
-                    return response.blob();
-                })
-                .then(blob => {
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = "output.zip";
-                    document.body.appendChild(a);
-                    a.click();
-                    a.remove();
-                    window.URL.revokeObjectURL(url);
-                })
-                .catch(err => {
-                    alert(err.message);
-                })
-                .finally(() => {
-                    // După ce inițiem descărcarea, dăm refresh
-                    window.location.reload();
-                });
-        }
-        // După stergere, facem refresh la pagină:
-        function delete_files() {
-            
-            window.location.reload();
-
-}
+        
+        
     </script>
 </body>
 </html>

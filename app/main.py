@@ -61,28 +61,21 @@ def upload_csv(files: List[UploadFile] = File(...),
     for existing_file in UPLOAD_FOLDER.iterdir():  # Verifică toate fișierele și subfolderele
         if existing_file.is_file():  # Asigură că ștergem doar fișiere, nu subfoldere
             existing_file.unlink()  # Șterge fișierul
+    # 🔹 Ștergem toate fișierele din folderul `csv/`
+    for existing_file in OUTPUT_FOLDER.iterdir():  # Verifică toate fișierele și subfolderele
+        if existing_file.is_file():  # Asigură că ștergem doar fișiere, nu subfoldere
+            existing_file.unlink()  # Șterge fișierul
 
-    overwritten_files = []
     new_files = []
     
     for file in files:
         file_path = UPLOAD_FOLDER / file.filename
-        
-        # Verificăm dacă fișierul există deja
-        if file_path.exists():
-            overwritten_files.append(file.filename)
-        else:
-            new_files.append(file.filename)
+        new_files.append(file.filename)
         
         # Copiem conținutul, suprascriind dacă fișierul există
         with file_path.open("wb") as f:
             shutil.copyfileobj(file.file, f)
     
-    # Construiește HTML pentru fișierele rescrise
-    if overwritten_files:
-        overwritten_html = "<ul>" + "".join(f"<li>{f}</li>" for f in overwritten_files) + "</ul>"
-    else:
-        overwritten_html = "<p><em>Niciun fișier rescris.</em></p>"
 
     # Construiește HTML pentru fișierele noi
     if new_files:
@@ -136,9 +129,10 @@ def process_files():
             subprocess.run(["python", "app/momyoy.py"], check=True)
             msg = "Procesare MOM YOY finalizată!"
         
-        return JSONResponse(content={"message": msg})
+        # Returnăm mesajul HTML către interfață
+        return HTMLResponse(content=msg)
     except subprocess.CalledProcessError as e:
-        return JSONResponse(content={"error": str(e)}, status_code=500)
+        return HTMLResponse(content=f"<p><strong>ERROR:</strong> {str(e)}</p>", status_code=500)
 
 
 @app.get("/download/{filename}")
@@ -171,24 +165,27 @@ def download_all(background_tasks: BackgroundTasks):
     response = FileResponse(archive_path, filename="output.zip")
     response.headers["Content-Disposition"] = "attachment; filename=output.zip"
 
-    # Șterge fișierele după descărcare
-    def cleanup():
-        for file in OUTPUT_FOLDER.glob("*.xlsx"):
-            file.unlink(missing_ok=True)
-        for csv_file in UPLOAD_FOLDER.glob("*.csv"):
-            csv_file.unlink(missing_ok=True)
-        archive_path.unlink(missing_ok=True)
+    # # Șterge fișierele după descărcare
+    # def cleanup():
+    #     for file in OUTPUT_FOLDER.glob("*.xlsx"):
+    #         file.unlink(missing_ok=True)
+    #     for csv_file in UPLOAD_FOLDER.glob("*.csv"):
+    #         csv_file.unlink(missing_ok=True)
+    #     archive_path.unlink(missing_ok=True)
 
-    background_tasks.add_task(cleanup)  # Rulează cleanup în fundal
-    return response
+    # background_tasks.add_task(cleanup)  # Rulează cleanup în fundal
+    # return response
 
 
-@app.get("/log")
+@app.get("/log", response_class=HTMLResponse)
 def get_log():
-    """Returnează conținutul fișierului log."""
+    """Returnează conținutul fișierului log pentru afișare în UI."""
     if LOG_FILE.exists():
-        return FileResponse(LOG_FILE, filename="process_log.txt")
-    return JSONResponse(content={"message": "Nu există erori."})
+        with LOG_FILE.open("r", encoding="utf-8") as f:
+            log_content = f.read()
+        return f"<div>{log_content}</div>"  # Returnăm log-ul formatat
+    return "<pre><em>Nu există erori în log.</em></pre>"
+
 
 @app.get("/list_files/")
 def list_files():
@@ -199,9 +196,11 @@ def list_files():
     file_links = "".join(f'<li><a href="/download/{file.name}" download>{file.name}</a></li>' for file in files)
     return HTMLResponse(f"<ul>{file_links}</ul>")
 
+from fastapi.responses import HTMLResponse
+
 @app.delete("/delete_files/")
 def delete_files():
-    """Șterge toate fișierele încărcate și generate."""
+    """Șterge toate fișierele încărcate și generate și returnează un mesaj HTML formatat."""
     deleted_files = []
 
     # Șterge fișierele din folderul CSV (încărcate)
@@ -209,25 +208,22 @@ def delete_files():
         for file in UPLOAD_FOLDER.glob("*"):
             try:
                 file.unlink()
-                deleted_files.append(str(file))
+                deleted_files.append(file.name)
             except Exception as e:
-                return JSONResponse(content={"error": f"Nu s-a putut șterge {file}: {e}"}, status_code=500)
+                return HTMLResponse(content=f"<p><strong>Eroare:</strong> Nu s-a putut șterge {file.name}: {e}</p>", status_code=500)
 
     # Șterge fișierele din folderul OUTPUT (generate)
     if OUTPUT_FOLDER.exists():
         for file in OUTPUT_FOLDER.glob("*.xlsx"):
             try:
                 file.unlink()
-                deleted_files.append(str(file))
+                deleted_files.append(file.name)
             except Exception as e:
-                return JSONResponse(content={"error": f"Nu s-a putut șterge {file}: {e}"}, status_code=500)
+                return HTMLResponse(content=f"<p><strong>Eroare:</strong> Nu s-a putut șterge {file.name}: {e}</p>", status_code=500)
 
-    # # Șterge fișierul de log (dacă există)
-    # if LOG_FILE.exists():
-    #     try:
-    #         LOG_FILE.unlink()
-    #         deleted_files.append(str(LOG_FILE))
-    #     except Exception as e:
-    #         return JSONResponse(content={"error": f"Nu s-a putut șterge logul: {e}"}, status_code=500)
-
-    return JSONResponse(content={"message": " fișiere șterse cu succes!", "deleted": deleted_files})
+    # Construim mesajul HTML
+    if deleted_files:
+        deleted_files_html = "<ul class='list-disc pl-5'>" + "".join(f"<li>{file}</li>" for file in deleted_files) + "</ul>"
+        return HTMLResponse(content=f"<p>Fișiere șterse cu succes:</p>{deleted_files_html}")
+    else:
+        return HTMLResponse(content="<p><em>Nu au fost găsite fișiere de șters.</em></p>")

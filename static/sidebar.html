@@ -1,54 +1,42 @@
-
-    <h1 class="text-xl font-bold">TradingView XLSX</h1>
-    <nav class="space-y-2">
-        <button class="w-full bg-blue-500 hover:bg-blue-600 py-2 rounded-lg"
-                hx-get="/main" hx-target="#main-content">Acasă</button>
-
-        <button class="w-full bg-yellow-500 hover:bg-yellow-600 py-2 rounded-lg"
-                hx-get="/instructions" hx-target="#main-content">Instrucțiuni</button>
-        
-                <button class="w-full bg-green-500 hover:bg-green-600 py-2 rounded-lg"
-                hx-get="/main"
-                hx-target="#main-content"
-                hx-on::after-request="htmx.trigger('#log-content', 'refresh')">
-            Vezi Log
+<h1 class="text-lg md:text-xl font-bold text-center md:text-left w-full">TradingView XLSX</h1>
+<nav class="flex md:flex-col gap-2 w-full justify-center md:justify-start">
+        <button class="flex justify-center items-center w-full bg-blue-500 hover:bg-blue-600 py-2 rounded-lg"
+                hx-get="/main" hx-target="#main-content">
+                <i data-lucide="home" class="w-6 h-6 md:inline justify-center text-center"></i>
+                <span class="hidden md:inline">&nbsp; Acasă</span>
         </button>
-        
-        <div id="delete-button-container" style="display: none;">
-                <button class="w-full bg-red-500 hover:bg-red-600 py-2 rounded-lg"
-                        hx-delete="/delete_files/"
-                        hx-target="#delete-status"
-                        hx-on::after-request="htmx.ajax('GET', '/main', {target: '#main-content'})">
-                    Șterge Fișiere
-                </button>
-            </div>
+
+        <button class="flex justify-center items-center w-full bg-yellow-500 hover:bg-yellow-600 py-2 rounded-lg"
+                hx-get="/instructions" hx-target="#main-content">
+                <i data-lucide="book-open-text" class="w-6 h-6 md:inline justify-center text-center"></i>
+                <span class="hidden md:inline">&nbsp; Instrucțiuni</span>
+        </button>
 
 
+        <button class="flex justify-center items-center w-full bg-green-500 hover:bg-green-600 py-2 rounded-lg"
+                hx-get="/log" hx-target="#log-content" hx-trigger="click" onclick="redirectToMainAndLoadLog()">
+                <i data-lucide="scroll-text" class="w-6 h-6 md:inline gap-2 justify-center text-center"></i>
+                <span class="hidden md:inline">&nbsp; Vezi Log</span>
+        </button>
+</nav></br>
 
-        <div id="delete-status" class="mt-4 text-red-600"></div>
-    </nav>
-    
-    <script>
-        function showDeleteButton() {
-            document.getElementById("delete-button-container").style.display = "block";
+<script>
+        function redirectToMainAndLoadLog() {
+                let mainContent = document.getElementById("main-content");
+
+                // Verifică dacă pagina curentă conține "Instrucțiuni"
+                if (mainContent.innerHTML.includes("Instrucțiuni")) {
+                        // Încărcăm mai întâi `main.html`, apoi log-ul
+                        htmx.ajax('GET', '/main', { target: '#main-content' }).then(() => {
+                                setTimeout(() => {
+                                        htmx.trigger("#log-content", "refresh");
+                                }, 500); // Mic delay pentru a aștepta încărcarea
+                        });
+                } else {
+                        // Dacă suntem deja în `main.html`, doar încărcăm log-ul
+                        htmx.trigger("#log-content", "refresh");
+                }
         }
-    
-        function hideDeleteButton() {
-            document.getElementById("delete-button-container").style.display = "none";
-        }
-    
-        // Verificăm ce pagină este încărcată și setăm vizibilitatea butonului
-        document.addEventListener("htmx:afterSwap", function(event) {
-            let mainContent = document.getElementById("main-content").innerHTML;
-            
-            if (mainContent.includes("Instrucțiuni")) {
-                hideDeleteButton();
-            } else {
-                showDeleteButton();
-            }
-        });
-    </script>
-    
-    
-    
-    
+        lucide.createIcons(); // Activează iconițele
+
+</script>
