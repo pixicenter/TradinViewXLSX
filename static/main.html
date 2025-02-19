@@ -15,7 +15,7 @@
 
 <!-- Form pentru încărcare -->
 <form id="upload-form" hx-post="/upload/" hx-encoding="multipart/form-data" hx-target="#upload-status"
-    hx-trigger="submit" class="bg-white p-6 rounded-lg shadow-md space-y-4">
+    hx-trigger="submit" hx-on::after-request="disableDownloadButton()" class="bg-white p-6 rounded-lg shadow-md space-y-4">
 
     <label class="block text-gray-700 font-semibold">Alege fișiere CSV:</label>
 
