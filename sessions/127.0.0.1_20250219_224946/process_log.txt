@@ -1,0 +1,31 @@
+[2025-02-19 22:49:49] Eroare: Fișierul 'ECONOMICS_GBRS, 1M.csv' nu respectă modelul de nume.
+[2025-02-19 22:49:49] Eroare: Fișierul 'ECONOMICS_GBRS, 3M.csv' nu respectă modelul de nume.
+[2025-02-19 22:49:49] Start procesare fișiere'
+[2025-02-19 22:49:49] Final procesare fișiere.
+[2025-02-19 22:50:26] Eroare: Fișierul 'ECONOMICS_GBRS, 1M.csv' nu respectă modelul de nume pentru MOM YOY.
+[2025-02-19 22:50:26] Eroare: Fișierul 'ECONOMICS_GBRS, 3M.csv' nu respectă modelul de nume pentru MOM YOY.
+[2025-02-19 22:50:26] Start procesare fișiere'
+[2025-02-19 22:50:26] Final procesare fișiere.
+[2025-02-19 22:50:29] Eroare: Fișierul 'ECONOMICS_GBRS, 1M.csv' nu respectă modelul de nume pentru MOM YOY.
+[2025-02-19 22:50:29] Eroare: Fișierul 'ECONOMICS_GBRS, 3M.csv' nu respectă modelul de nume pentru MOM YOY.
+[2025-02-19 22:50:29] Start procesare fișiere'
+[2025-02-19 22:50:29] Final procesare fișiere.
+[2025-02-19 22:50:56] Eroare: Fișierul 'ECONOMICS_USBCOI, 1M.csv' nu respectă modelul de nume pentru MOM YOY.
+[2025-02-19 22:50:56] Eroare: Fișierul 'ECONOMICS_USBCOI, 3M.csv' nu respectă modelul de nume pentru MOM YOY.
+[2025-02-19 22:50:56] Start procesare fișiere'
+[2025-02-19 22:50:57] ✔ Fișier completat: ECONOMICS_GBRS.xlsx
+[2025-02-19 22:50:57] Final procesare fișiere.
+[2025-02-19 22:51:15] Start procesare fișiere'
+[2025-02-19 22:51:16] ✔ Fișier completat: ECONOMICS_USBCOI.xlsx
+[2025-02-19 22:51:16] Final procesare fișiere.
+[2025-02-19 22:51:35] Start procesare fișiere.'
+[2025-02-19 22:51:36] ✔ Fișier completat: ECONOMICS_USBCOI.xlsx
+[2025-02-19 22:51:36] Final procesare fișiere.
+[2025-02-19 22:51:50] Start procesare fișiere.'
+[2025-02-19 22:51:50] Eroare: Fișierele CSV 1M / 3M pentru 'ECONOMICS_GBRSYY' nu sunt complete.
+[2025-02-19 22:51:50] Eroare: Fișierele CSV 1M / 3M pentru 'ECONOMICS_GBRSMM' nu sunt complete.
+[2025-02-19 22:51:50] Final procesare fișiere.
+[2025-02-19 22:52:00] Start procesare fișiere'
+[2025-02-19 22:52:00] Eroare: Fișierele CSV 1M / 3M pentru 'ECONOMICS_GBRSYY' nu sunt complete.
+[2025-02-19 22:52:00] Eroare: Fișierele CSV 1M / 3M pentru 'ECONOMICS_GBRSMM' nu sunt complete.
+[2025-02-19 22:52:00] Final procesare fișiere.

@@ -1,0 +1,11 @@
+[2025-02-19 22:43:22] Start procesare fișiere'
+[2025-02-19 22:43:22] Eroare: Fișierele CSV 1M / 3M pentru 'ECONOMICS_GBRSYY' nu sunt complete.
+[2025-02-19 22:43:22] Eroare: Fișierele CSV 1M / 3M pentru 'ECONOMICS_GBRSMM' nu sunt complete.
+[2025-02-19 22:43:22] Final procesare fișiere.
+[2025-02-19 22:43:32] Start procesare fișiere'
+[2025-02-19 22:43:33] ✔ Fișier completat: ECONOMICS_GBRS.xlsx
+[2025-02-19 22:43:33] Final procesare fișiere.
+[2025-02-19 22:43:45] Start procesare fișiere'
+[2025-02-19 22:43:45] Final procesare fișiere.
+[2025-02-19 22:43:47] Start procesare fișiere'
+[2025-02-19 22:43:47] Final procesare fișiere.

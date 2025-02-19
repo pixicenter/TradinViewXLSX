@@ -1,2 +1,4 @@
 logs/
 __pycache__/
+/sessions/
+process_log.txt

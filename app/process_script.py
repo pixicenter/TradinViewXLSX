@@ -2,6 +2,7 @@ import os
 import pandas as pd
 from openpyxl import load_workbook
 from datetime import datetime
+import argparse
 
 def log_processing_info(log_file, message):
     """
@@ -94,7 +95,7 @@ def process_csv_to_xlsx(csv_folder, template_path, output_folder, log_file="proc
         os.makedirs(output_folder)
     
     # Log: începem procesarea
-    log_processing_info(log_file, f"Start procesare fișiere din folderul '{csv_folder}'")
+    log_processing_info(log_file, f"Start procesare fișiere'")
     
     for base_name, files in csv_pairs.items():
         # Verificăm dacă avem și fișier 1M, și fișier 3M
@@ -141,7 +142,7 @@ def process_csv_to_xlsx(csv_folder, template_path, output_folder, log_file="proc
             output_file = os.path.join(output_folder, f"{base_name}.xlsx")
             wb.save(output_file)
             
-            msg_ok = f"✔ Fișier completat: {output_file}"
+            msg_ok = f"✔ Fișier completat: {base_name}.xlsx"
             print(msg_ok)
             log_processing_info(log_file, msg_ok)
         
@@ -154,13 +155,70 @@ def process_csv_to_xlsx(csv_folder, template_path, output_folder, log_file="proc
     # Log: finalizare
     log_processing_info(log_file, "Final procesare fișiere.")
 
-# Exemplu de utilizare
+# ------------------------------------------------
+# EXEMPLU de utilizare (script standalone):
+# ------------------------------------------------
 if __name__ == "__main__":
-    csv_folder = "csv"
-    template_path = "template/template.xlsx"
-    output_folder = "output"
-    
-    # Fișierul de log (va fi creat automat dacă nu există)
-    log_file = "process_log.txt"
-    
-    process_csv_to_xlsx(csv_folder, template_path, output_folder, log_file)
+
+    # 1) Încarcă argumentele din linia de comandă
+    parser = argparse.ArgumentParser(description="Procesare CSV în XLSX.")
+    parser.add_argument(
+        "--csv-folder",
+        type=str,
+        default=None,
+        help="Folderul unde sunt fișierele CSV."
+    )
+    parser.add_argument(
+        "--template-path",
+        type=str,
+        default=None,
+        help="Calea către fișierul template XLSX."
+    )
+    parser.add_argument(
+        "--output-folder",
+        type=str,
+        default=None,
+        help="Folderul unde se vor salva fișierele XLSX rezultate."
+    )
+    parser.add_argument(
+        "--log-file",
+        type=str,
+        default=None,
+        help="Numele/locația fișierului de log."
+    )
+    args = parser.parse_args()
+
+    # 2) Preia și din variabile de mediu (dacă nu vin din CLI):
+    #    CSV_FOLDER, TEMPLATE_PATH, OUTPUT_FOLDER, LOG_FILE
+    csv_folder_env = os.getenv("CSV_FOLDER", "csv")
+    template_path_env = os.getenv("TEMPLATE_PATH", "template/template.xlsx")
+    output_folder_env = os.getenv("OUTPUT_FOLDER", "output")
+    log_file_env = os.getenv("LOG_FILE", "process_log.txt")
+
+    # 3) Alege ordinea priorităților:
+    #    CLI > Environment Variables > Valorile default
+    csv_folder = args.csv_folder if args.csv_folder else csv_folder_env
+    template_path = args.template_path if args.template_path else template_path_env
+    output_folder = args.output_folder if args.output_folder else output_folder_env
+    log_file = args.log_file if args.log_file else log_file_env
+
+    # --------------------------------------------------------
+    # Liniile următoare erau în codul original - le comentăm,
+    # dar nu le ștergem (cerința ta).
+    # --------------------------------------------------------
+    # csv_folder = "csv"
+    # template_path = "template/template.xlsx"
+    # output_folder = "output"
+    # log_file = "process_log.txt"
+    #
+    # process_csv_to_xlsx(csv_folder, template_path, output_folder, log_file)
+
+    # --------------------------------------------------------
+    # Apel final cu parametrii obținuți din CLI / ENV
+    # --------------------------------------------------------
+    process_csv_to_xlsx(
+        csv_folder=csv_folder,
+        template_path=template_path,
+        output_folder=output_folder,
+        log_file=log_file
+    )

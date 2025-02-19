@@ -1,0 +1,7 @@
+[2025-02-19 22:16:26] Start procesare fișiere din folderul 'sessions/127.0.0.1_20250219_221617/csv'
+[2025-02-19 22:16:27] ✔ Fișier completat: sessions/127.0.0.1_20250219_221617/output/ECONOMICS_USBCOI.xlsx
+[2025-02-19 22:16:27] Final procesare fișiere.
+[2025-02-19 22:21:34] Start procesare fișiere din folderul 'sessions/127.0.0.1_20250219_221617/csv'
+[2025-02-19 22:21:34] Eroare: Fișierele CSV 1M / 3M pentru 'ECONOMICS_USCPI' nu sunt complete.
+[2025-02-19 22:21:34] Eroare: Fișierele CSV 1M / 3M pentru 'ECONOMICS_GBRS' nu sunt complete.
+[2025-02-19 22:21:34] Final procesare fișiere.

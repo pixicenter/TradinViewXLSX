@@ -1,0 +1,4 @@
+[2025-02-19 22:06:30] Start procesare fișiere din folderul 'sessions/127.0.0.1_20250219_220607/csv'
+[2025-02-19 22:06:30] Eroare: Fișierele CSV 1M / 3M pentru 'ECONOMICS_GBRSYY' nu sunt complete.
+[2025-02-19 22:06:30] Eroare: Fișierele CSV 1M / 3M pentru 'ECONOMICS_GBRSMM' nu sunt complete.
+[2025-02-19 22:06:30] Final procesare fișiere.
