@@ -85,7 +85,7 @@ async def block_bots_and_add_session(request: Request, call_next):
     # generăm un nou session_id bazat pe IP și timestamp.
     # (Ex: 192.168.1.10_20250119_160452)
     if not session_id_cookie or session_id_cookie not in SESSIONS:
-        session_id = f"{client_ip}_{now_str}"
+        session_id = client_ip
         SESSIONS[session_id] = current_time
     else:
         # Avem cookie, deci extragem creation_time
