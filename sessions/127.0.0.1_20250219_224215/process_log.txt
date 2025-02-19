@@ -1,3 +1,0 @@
-[2025-02-19 22:42:31] Start procesare fișiere'
-[2025-02-19 22:42:32] Eroare la procesarea 'ECONOMICS_GBRS': '1M'
-[2025-02-19 22:42:32] Final procesare fișiere.

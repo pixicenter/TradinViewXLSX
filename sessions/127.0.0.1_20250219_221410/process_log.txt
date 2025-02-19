@@ -1,3 +1,0 @@
-[2025-02-19 22:14:22] Start procesare fișiere din folderul 'sessions/127.0.0.1_20250219_221410/csv'
-[2025-02-19 22:14:23] ✔ Fișier completat: sessions/127.0.0.1_20250219_221410/output/ECONOMICS_USBCOI.xlsx
-[2025-02-19 22:14:23] Final procesare fișiere.
