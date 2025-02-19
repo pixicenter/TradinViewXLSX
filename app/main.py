@@ -25,6 +25,16 @@ UPLOAD_FOLDER.mkdir(parents=True, exist_ok=True)
 OUTPUT_FOLDER.mkdir(parents=True, exist_ok=True)
 TEMPLATE_FOLDER.mkdir(parents=True, exist_ok=True)
 
+BLOCKED_BOTS = ["Googlebot", "Bingbot", "Slurp", "DuckDuckBot", "Baiduspider", "YandexBot"]
+
+@app.middleware("http")
+async def block_bots(request: Request, call_next):
+    user_agent = request.headers.get("user-agent", "").lower()
+    if any(bot.lower() in user_agent for bot in BLOCKED_BOTS):
+        return JSONResponse(status_code=403, content={"message": "Access Forbidden for Bots"})
+    
+    return await call_next(request)
+
 @app.get("/", response_class=HTMLResponse)
 def serve_index():
     return FileResponse("static/index.html")
