@@ -13,7 +13,7 @@ import time  # Pentru a ține evidența duratei sesiunii
 app = FastAPI()
 
 # Servește fișierele HTML
-app.mount("tw/static", StaticFiles(directory="static"), name="static")
+app.mount("/tw/static", StaticFiles(directory="static"), name="static")
 
 # -----------------------------------------------------------------------------------
 # Variabile globale existente
