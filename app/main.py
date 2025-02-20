@@ -13,7 +13,7 @@ import time  # Pentru a ține evidența duratei sesiunii
 app = FastAPI()
 
 # Servește fișierele HTML
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("tw/static", StaticFiles(directory="static"), name="static")
 
 # -----------------------------------------------------------------------------------
 # Variabile globale existente
@@ -112,7 +112,7 @@ async def block_bots_and_add_session(request: Request, call_next):
     )
     return response
 
-@app.get("/", response_class=HTMLResponse)
+@app.get("/tw", response_class=HTMLResponse)
 def serve_index():
     return FileResponse("static/index.html")
 
