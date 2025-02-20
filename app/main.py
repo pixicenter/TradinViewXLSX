@@ -112,7 +112,7 @@ async def block_bots_and_add_session(request: Request, call_next):
     )
     return response
 
-@app.get("/tw", response_class=HTMLResponse)
+@app.get("/", response_class=HTMLResponse)
 def serve_index():
     return FileResponse("static/index.html")
 
