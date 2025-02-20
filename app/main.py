@@ -114,7 +114,7 @@ async def block_bots_and_add_session(request: Request, call_next):
 
 @app.get("/", response_class=HTMLResponse)
 def serve_index():
-    return FileResponse(BASE_DIR / "static" / "index.html")
+    return FileResponse("static/index.html")
 
 # def home():
 #     index_path = Path(__file__).parent / "templates" / "index.html"
@@ -124,15 +124,15 @@ def serve_index():
 
 @app.get("/main")
 def serve_main():
-    return FileResponse(BASE_DIR / "static" / "main.html")
+    return FileResponse("static/main.html")
 
 @app.get("/instructions")
 def serve_instructions():
-    return FileResponse(BASE_DIR / "static" / "instructions.html")
+    return FileResponse("static/instructions.html")
 
 @app.get("/sidebar")
 def serve_main():
-     return FileResponse(BASE_DIR / "static" / "sidebar.html")
+     return FileResponse("static/sidebar.html")
 
 
 @app.post("/upload/")
