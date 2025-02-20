@@ -14,7 +14,7 @@ app = FastAPI()
 
 # Servește fișierele HTML
 app.mount("/static", StaticFiles(directory="static"), name="static")
-BASE_DIR = Path("tw")
+BASE_DIR = Path(__file__).resolve().parent
 # -----------------------------------------------------------------------------------
 # Variabile globale existente
 # -----------------------------------------------------------------------------------
@@ -132,7 +132,7 @@ def serve_instructions():
 
 @app.get("/sidebar", response_class=HTMLResponse)
 def serve_main():
-     return FileResponse("static/sidebar.html")
+     return FileResponse(BASE_DIR / "static/sidebar.html")
 
 
 @app.post("/upload/")
