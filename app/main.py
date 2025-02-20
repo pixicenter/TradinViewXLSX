@@ -14,7 +14,7 @@ app = FastAPI()
 
 # Servește fișierele HTML
 app.mount("/static", StaticFiles(directory="static"), name="static")
-BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = Path("tw")
 # -----------------------------------------------------------------------------------
 # Variabile globale existente
 # -----------------------------------------------------------------------------------
