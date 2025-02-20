@@ -122,15 +122,15 @@ def serve_index():
 #         return index_path.read_text()
 #     return "<h1>Eroare: Fișierul index.html lipsește.</h1>"
 
-@app.get("/main")
+@app.get("/main", response_class=HTMLResponse)
 def serve_main():
     return FileResponse("static/main.html")
 
-@app.get("/instructions")
+@app.get("/instructions", response_class=HTMLResponse)
 def serve_instructions():
     return FileResponse("static/instructions.html")
 
-@app.get("/sidebar")
+@app.get("/sidebar", response_class=HTMLResponse)
 def serve_main():
      return FileResponse("static/sidebar.html")
 
