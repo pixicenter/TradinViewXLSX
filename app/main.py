@@ -332,7 +332,7 @@ def get_log(request: Request):
     Returnează conținutul fișierului log *din sesiunea curentă*.
     """
     session_id = request.state.session_id
-    session_log_file = (SESSION_FOLDER / session_id / "process_log.txt").resolve()
+    session_log_file = (BASE_DIR / SESSION_FOLDER / session_id / "process_log.txt").resolve()
 
     if session_log_file.exists():
         with session_log_file.open("r", encoding="utf-8") as f:
