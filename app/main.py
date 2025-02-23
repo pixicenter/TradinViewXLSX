@@ -258,10 +258,9 @@ def process_files(request: Request):
 
 
 @app.get("/download/{filename}")
-def download_file(filename: str, background_tasks: BackgroundTasks, request: Request):
+def download_file(filename: str, request: Request):
     """
-    Permite descărcarea unui fișier XLSX generat pentru sesiunea curentă
-    (în loc să le șteargă global).
+    Permite descărcarea unui fișier XLSX generat pentru sesiunea curentă.
     """
     session_id = request.state.session_id
     session_folder = SESSION_FOLDER / session_id / "output"
@@ -270,14 +269,6 @@ def download_file(filename: str, background_tasks: BackgroundTasks, request: Req
     if file_path.exists():
         response = FileResponse(file_path, filename=filename)
         response.headers["Content-Disposition"] = f"attachment; filename={filename}"
-        
-        # # Șterge fișierul și CSV-urile după descărcare
-        # def cleanup():
-        #     file_path.unlink(missing_ok=True)
-        #     for csv_file in UPLOAD_FOLDER.glob("*.csv"):
-        #         csv_file.unlink(missing_ok=True)
-        # background_tasks.add_task(cleanup)
-
         return response
 
     return JSONResponse(content={"error": f"Fișierul {filename} nu există pentru această sesiune."}, status_code=404)
