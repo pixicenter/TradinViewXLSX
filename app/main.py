@@ -267,9 +267,7 @@ def download_file(filename: str, request: Request):
     file_path = session_folder / filename
 
     if file_path.exists():
-        response = FileResponse(file_path, filename=filename)
-        response.headers["Content-Disposition"] = f"attachment; filename={filename}"
-        return response
+        return FileResponse(file_path, media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 
     return JSONResponse(content={"error": f"Fișierul {filename} nu există pentru această sesiune."}, status_code=404)
 
