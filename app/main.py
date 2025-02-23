@@ -216,7 +216,7 @@ def process_files(request: Request):
                 "--log-file", f"sessions/{session_id}/process_log.txt"
             ], check=True)
             msg = f"Procesare PPI finalizată!"
-      
+        if file_type == "PMIPCNOMINAL":
             # Rulăm pmipcnominal.py (când îl vei crea)
             subprocess.run(["python", "app/pmipcnominal.py",
                 "--csv-folder", f"sessions/{session_id}/csv",
