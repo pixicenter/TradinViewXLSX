@@ -9,6 +9,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/htmx.org@1.9.6"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    
 
 </head>
 <body class="bg-gray-100 flex h-screen flex flex-col md:flex-row min-h-screen">
@@ -21,7 +22,7 @@
      
     <!-- Conținut principal (se schimbă dinamic) -->
     <main id="main-content" class="flex-1 p-6 mx-auto max-w-4xl">
-        <div hx-get="/instructions" hx-trigger="load" hx-target="#main-content" class="w-full max-w-full" ></div>
+        <div hx-get="/main" hx-trigger="load" hx-target="#main-content" class="w-full max-w-full" ></div>
     </main>
     
     <script>

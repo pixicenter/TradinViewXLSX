@@ -64,21 +64,6 @@ async def block_bots_and_add_session(request: Request, call_next):
     now_str = datetime.now().strftime("%Y%m%d_%H%M%S")
 
     # ----------------------------------------------------------------
-    # Vechea variantă (folosind uuid4) a fost comentată, nu ștearsă:
-    # ----------------------------------------------------------------
-    # if not session_id or session_id not in SESSIONS:
-    #     session_id = str(uuid.uuid4())
-    #     SESSIONS[session_id] = current_time
-    # else:
-    #     # Verifică expirarea (8 ore = 8 * 3600 sec)
-    #     creation_time = SESSIONS[session_id]
-    #     if (current_time - creation_time) > 8 * 3600:
-    #         # Sesiune expirată -> generăm una nouă
-    #         del SESSIONS[session_id]
-    #         session_id = str(uuid.uuid4())
-    #         SESSIONS[session_id] = current_time
-
-    # ----------------------------------------------------------------
     # Noua variantă: session_id = <client_ip>_<YYYYmmdd_HHMMSS>
     # ----------------------------------------------------------------
     # Dacă cookie-ul "session_id" nu există sau nu se află în SESSIONS,
@@ -151,17 +136,6 @@ def upload_csv(
     
     session_id = request.state.session_id
     USER_SELECTED_FILE_TYPE[session_id] = file_type  # Stocăm tipul în dict, per session_id
-
-    # --------------------------------------------------------------------------------
-    # Comentăm liniile care șterg global tot din CSV/ și OUTPUT/, 
-    # deoarece acum vrem să avem subfoldere pe sesiune.
-    # --------------------------------------------------------------------------------
-    # for existing_file in UPLOAD_FOLDER.iterdir():
-    #     if existing_file.is_file():
-    #         existing_file.unlink()
-    # for existing_file in OUTPUT_FOLDER.iterdir():
-    #     if existing_file.is_file():
-    #         existing_file.unlink()
 
     # Creăm foldere separate pentru această sesiune
     session_folder = SESSION_FOLDER / session_id
@@ -242,27 +216,38 @@ def process_files(request: Request):
                 "--log-file", f"sessions/{session_id}/process_log.txt"
             ], check=True)
             msg = f"Procesare PPI finalizată!"
-        elif file_type == "GDPQOQYOY":
-            # Rulăm gppqoqyoy.py (când îl vei crea)
-            subprocess.run(["python", "app/gppqoqyoy.py",
-                "--csv-folder", f"sessions/{session_id}/csv",
-                "--template-path", "template/template.xlsx",
-                "--output-folder", f"sessions/{session_id}/output",
-                "--log-file", f"sessions/{session_id}/process_log.txt"], check=True)
-            msg = f"Procesare GDPQOQYOY finalizată!"
-        elif file_type == "PMIPCNOMINAL":
+      
             # Rulăm pmipcnominal.py (când îl vei crea)
             subprocess.run(["python", "app/pmipcnominal.py",
                 "--csv-folder", f"sessions/{session_id}/csv",
-                "--template-path", "template/template.xlsx",
+                "--template-path", "template/pmipcnominal.xlsx",
                 "--output-folder", f"sessions/{session_id}/output",
                 "--log-file", f"sessions/{session_id}/process_log.txt"], check=True)
             msg = f"Procesare PMI PC Valoare Nominala finalizată!"
+
+        elif file_type == "GDPPCY":
+            # Rulăm gdppcy.py (când îl vei crea)
+            subprocess.run(["python", "app/gdppcy.py",
+                "--csv-folder", f"sessions/{session_id}/csv",
+                "--template-path", "template/GDPPCy.xlsx",
+                "--output-folder", f"sessions/{session_id}/output",
+                "--log-file", f"sessions/{session_id}/process_log.txt"], check=True)
+            msg = f"Procesare GDPPCY finalizată!"
+
+        elif file_type == "REALGDPQY":
+            # Rulăm realgdpqy.py (când îl vei crea)
+            subprocess.run(["python", "app/realgdpqy.py",
+                "--csv-folder", f"sessions/{session_id}/csv",
+                "--template-path", "template/realGDPQY.xlsx",
+                "--output-folder", f"sessions/{session_id}/output",
+                "--log-file", f"sessions/{session_id}/process_log.txt"], check=True)
+            msg = f"Procesare REALGDPQY finalizată!"
+
         else:
             # Rulăm momyoy.py (exemplu)
             subprocess.run(["python", "app/momyoy.py",
                 "--csv-folder", f"sessions/{session_id}/csv",
-                "--template-path", "template/template.xlsx",
+                "--template-path", "template/RSMoMYoY.xlsx",
                 "--output-folder", f"sessions/{session_id}/output",
                 "--log-file", f"sessions/{session_id}/process_log.txt"], check=True)
             msg = f"Procesare MOM YOY finalizată!"
@@ -400,3 +385,26 @@ def delete_files(request: Request):
         return HTMLResponse(
             content=f"<p><em>Nu au fost găsite fișiere de șters pentru sesiunea curentă.</em></p>"
         )
+@app.get("/list_uploaded_files/")
+def list_uploaded_files(request: Request):
+    """
+    Returnează lista fișierelor CSV încărcate pentru sesiunea curentă.
+    """
+    session_id = request.state.session_id
+    session_csv_folder = SESSION_FOLDER / session_id / "csv"
+    files = list(session_csv_folder.glob("*.csv"))
+    if not files:
+        return HTMLResponse("<p></p>")
+    
+    file_list = "".join(f"<li>{file.name}</li>" for file in files)
+    return HTMLResponse(f"<span class='md:inline'>Fisiere incarcate anterior</span></ br><ul>{file_list}</ul>")
+
+@app.get("/check_session/")
+def check_session(request: Request):
+    """
+    Verifică dacă sesiunea curentă este activă.
+    """
+    session_id = request.state.session_id
+    if session_id in SESSIONS:
+        return JSONResponse(content={"active": True})
+    return JSONResponse(content={"active": False})

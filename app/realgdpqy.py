@@ -1,5 +1,4 @@
 import os
-import re
 import pandas as pd
 from openpyxl import load_workbook
 from datetime import datetime
@@ -14,62 +13,15 @@ def log_processing_info(log_file, message):
     with open(log_file, "a", encoding="utf-8") as f:
         f.write(f"[{now}] {message}\n")
 
-def find_csv_pairs(csv_folder, log_file):
-    """
-    Identifică perechile de fișiere CSV (MM și YY) pe baza numelui comun.
-    Pentru fișierele care nu respectă modelul, scrie o eroare în log.
-    Pentru fiecare pereche incompletă (lipsind fie MM, fie YY) se scrie de asemenea o eroare.
-    
-    Returnează un dict de forma:
-    {
-      'Nume Comun': {
-          'MM': 'cale/catre/..., MM.csv',
-          'YY': 'cale/catre/..., YY.csv'
-       },
-      ...
-    }
-    """
-    csv_files = os.listdir(csv_folder)
-    csv_pairs = {}
-    
-    for file in csv_files:
-        if file.endswith(".csv"):
-            # Regex pentru a extrage numele principal și tipul indicatorului (MM sau YY)
-            match = re.match(r"(.+?)(MM|YY),\s*1M\.csv$", file)
-            if match:
-                base_name, indicator_type = match.groups()  # Extragem numele și tipul indicatorului
-                csv_pairs.setdefault(base_name, {})[indicator_type] = os.path.join(csv_folder, file)
-            else:
-                log_processing_info(log_file, f"Eroare: Fișierul '{file}' nu respectă modelul de nume pentru MOM YOY.")
-    
-    # Filtrăm și logăm perechile incomplete
-    complete_pairs = {}
-    for base_name, files in csv_pairs.items():
-        if "MM" in files and "YY" in files:
-            complete_pairs[base_name] = files
-        else:
-            log_processing_info(log_file, f"Eroare: Fișierele CSV pentru '{base_name}' nu sunt complete: {files}")
-    
-    return complete_pairs
-
 
 def clear_last_row_formulas_lunar(ws, last_data_row):
     """
     Elimină formulele din coloanele specifice pentru ultimul rând generat 
     pentru date lunare (1M).
     """
-    columns_to_clear = ["I", "J", "K", "L", "M", "N"]
+    columns_to_clear = ["J", "K", "L", "M", "N", "O", "W", "X", "Y", "Z", "AA", "AB"]
     for col in columns_to_clear:
         ws[f"{col}{last_data_row}"].value = None
-
-def clear_last_row_formulas_quarter(ws, last_data_row_quarter):
-    """
-    Elimină formulele din coloanele
-    pentru ultimul rând din datele trimestriale (3M).
-    """
-    columns_to_clear = ["W", "X", "Y", "Z", "AA", "AB"]
-    for col in columns_to_clear:
-        ws[f"{col}{last_data_row_quarter}"].value = None
 
 def remove_extra_rows(ws, num_rows):
     """
@@ -80,29 +32,15 @@ def remove_extra_rows(ws, num_rows):
     if max_existing_rows > num_rows + 1:
         ws.delete_rows(num_rows + 2, max_existing_rows - num_rows - 1)
 
-def remove_extra_rows_quarter(ws, num_rows_quarter):
-    """
-    Elimină valorile în plus din coloane dacă fișierul 3M 
-    are mai puține rânduri decât template-ul.
-    """
-    columns_to_clear = [
-        "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", 
-        "AA", "AB"
-    ]
-    max_existing_rows = ws.max_row
-    
-    # Golim conținutul (nu ștergem rândurile) după num_rows_quarter
-    for row in range(num_rows_quarter + 2, max_existing_rows + 1):
-        for col in columns_to_clear:
-            ws[f"{col}{row}"].value = None
+
 
 def process_csv_to_xlsx(csv_folder, template_path, output_folder, log_file="process_log.txt"):
     """
-    Completează template.xlsx cu datele din fișierele CSV (1M și 3M),
+    Completează template.xlsx cu datele din fișierele CSV,
     fără a modifica structura acestuia. 
     Scrie log-uri în 'log_file'.
     """
-    csv_pairs = find_csv_pairs(csv_folder, log_file)
+    csv_files = [f for f in os.listdir(csv_folder) if f.endswith(".csv")]
     
     # Creăm folderul de output dacă nu există
     if not os.path.exists(output_folder):
@@ -111,14 +49,9 @@ def process_csv_to_xlsx(csv_folder, template_path, output_folder, log_file="proc
     # Log: începem procesarea
     log_processing_info(log_file, f"Start procesare fișiere'")
     
-    for base_name, files in csv_pairs.items():
-        # Verificăm dacă avem și fișier MM, și fișier 3M
-        if "MM" not in files or "YY" not in files:
-            error_msg = f"Eroare: Fișierele CSV MM / YY pentru '{base_name}' nu sunt complete sau corecte."
-            print(error_msg)
-            log_processing_info(log_file, error_msg)
-            # Continuăm cu următorul 'base_name'
-            continue
+    for csv_file in csv_files:
+        base_name = os.path.splitext(csv_file)[0]  # Scoatem extensia
+        csv_path = os.path.join(csv_folder, csv_file)
         
         try:
             # Încarcă șablonul Excel
@@ -129,28 +62,17 @@ def process_csv_to_xlsx(csv_folder, template_path, output_folder, log_file="proc
             ws.title = base_name
             
             # Citește datele din CSV-uri
-            df_lunar = pd.read_csv(files["MM"])
-            df_quarter = pd.read_csv(files["YY"])
+            df = pd.read_csv(csv_path)
+            num_rows = len(df)
             
-            num_rows = len(df_lunar)
-            num_rows_quarter = len(df_quarter)
-            
-            # Inserăm datele 1M (exemplu: coloanele A și B)
-            for index, row in df_lunar.iterrows():
-                ws.cell(row=index+2, column=1, value=row.iloc[0])  # data 1M
-                ws.cell(row=index+2, column=2, value=row.iloc[1])  # valoare 1M
-            
-            # Inserăm datele 3M (exemplu: coloanele R și S)
-            for index, row in df_quarter.iterrows():
-                if index < num_rows:  
-                    ws.cell(row=index+2, column=15, value=row.iloc[0])  # data 3M
-                    ws.cell(row=index+2, column=16, value=row.iloc[1])  # valoare 3M
+            # Inserăm datele în coloanele A și B ale fișierului Excel
+            for index, row in df.iterrows():
+                ws.cell(row=index+2, column=1, value=row.iloc[0])  # Data CSV
+                ws.cell(row=index+2, column=2, value=row.iloc[1])  # Valoare CSV
             
             # Eliminăm rândurile și formulele în plus
             remove_extra_rows(ws, num_rows)
-            remove_extra_rows_quarter(ws, num_rows_quarter)
             clear_last_row_formulas_lunar(ws, num_rows + 1)
-            clear_last_row_formulas_quarter(ws, num_rows_quarter + 1)
             
             # Salvează fișierul XLSX rezultat
             output_file = os.path.join(output_folder, f"{base_name}.xlsx")
@@ -168,7 +90,6 @@ def process_csv_to_xlsx(csv_folder, template_path, output_folder, log_file="proc
     
     # Log: finalizare
     log_processing_info(log_file, "Final procesare fișiere.")
-
 
 # ------------------------------------------------
 # EXEMPLU de utilizare (script standalone):
