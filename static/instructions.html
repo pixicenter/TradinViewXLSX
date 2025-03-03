@@ -9,6 +9,20 @@
         - După fiecare încărcare, fișierele CSV încărcate ulterior precum și fișierele XLSX generate vor fi <span class="text-red-500">șterse</span>.<br>
         - Lista de fișiere încărcate va fi actualizată automat.
     </p>
+   
+    <h3 class="text-lg font-semibold text-gray-700 mt-4">Structura Fisiere CSV pentru Tip Fisier generat</h3>
+    <p class="text-gray-500">
+        Fiecare tip de fisier are nevoie de o structura specifica si de un numar de fisiere CSV pentru a genera fisierul XLSX.<br>
+        - Pentru <strong class="text-green-500">FULL PC PROCENT</strong> generatorul are nevoie de o pereche de <strong>2 fisiere</strong>, de genul <b>*****, 1M.csv</b> si <b>*****, 3M.csv</b>. Perechea este validata daca denumirea <b>"*****"</b> este aceeasi. <br>
+        <i>De exemplu <b>IndicatorSpecific, 1M.csv</b> si <b>IndicatorSpecific, 3M.csv</b></i> <br>
+        - Pentru <strong class="text-green-500">PMI PC Valoare Nominala</strong> generatorul are nevoie de o pereche de <strong>2 fisiere</strong>, de genul <b>*****, 1M.csv</b> si <b>*****, 3M.csv</b>. Perechea este validata daca denumirea <b>"*****"</b> este aceeasi. <br>
+        <i>De exemplu <b>IndicatorSpecific, 1M.csv</b> si <b>IndicatorSpecific, 3M.csv</b></i> <br>
+        - Pentru <strong class="text-green-500">MOM YOY</strong> generatorul are nevoie de o pereche de <strong>2 fisiere</strong>, de genul <b>*****, MM.csv</b> si <b>*****, YY.csv</b>. Perechea este validata daca denumirea <b>"*****"</b> este aceeasi. <br>
+        <i>De exemplu <b>DenumireFisier, MM.csv</b> si <b>DenumireFisier, YY.csv</b></i> <br>
+        - Pentru <strong class="text-green-500">GDP Year</strong> nu exista o formula specifica a denumirii pentru tipul de CSV. Pentru fiecare fisier incarcat, genereaza un fisier XLSX.<br>
+        - Pentru <strong class="text-green-500">Real GDP Year</strong> nu exista o formula specifica a denumirii pentru tipul de CSV. Pentru fiecare fisier incarcat, genereaza un fisier XLSX.<br>
+        - Pentru fiecare tip, pot fi incarcate mai multe fisiere in acelasi timp, daca resepecta structura de numire specifica tipului de fisier dorit.
+    </p>
 
     <h3 class="text-lg font-semibold text-gray-700 mt-4">2. Procesarea fișierelor</h3>
     <p class="text-gray-600">
