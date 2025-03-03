@@ -20,6 +20,13 @@
         </button>
 </nav></br>
 
+<!-- Secțiunea de statistici utilizare va fi plasată la finalul sidebar-ului -->
+<div class="mt-auto p-4">
+        <div id="user-count">
+            <p>Useri: <span id="user-count-value" hx-get="/user_count" hx-trigger="load" hx-target="#user-count-value">Încărcare...</span></p>
+        </div>
+    </div>
+
 <script>
         function redirectToMainAndLoadLog() {
                 let mainContent = document.getElementById("main-content");

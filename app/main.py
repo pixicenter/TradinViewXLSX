@@ -4,7 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from typing import List
 from pathlib import Path
 import shutil
-import uuid
+import os
 import zipfile
 import subprocess
 from datetime import datetime
@@ -397,3 +397,25 @@ def check_session(request: Request):
     if session_id in SESSIONS:
         return JSONResponse(content={"active": True})
     return JSONResponse(content={"active": False})
+
+def count_user_folders(session_folder_path):
+    try:
+        if not os.path.isdir(session_folder_path):
+            return 0
+        
+        # Folosim pathlib pentru a verifica subfolderele
+        subfolders = [f for f in session_folder_path.iterdir() if f.is_dir()]
+        return len(subfolders)
+    except Exception as e:
+        print(f"A apărut o eroare: {e}")
+        return 0
+
+
+@app.get("/user_count", response_class=HTMLResponse)
+def get_user_count(request: Request):
+    """
+    Returnează numărul de utilizatori (subfoldere) din folderul 'sessions'.
+    """
+    folder_path = SESSION_FOLDER
+    num_users = count_user_folders(folder_path)
+    return HTMLResponse(content=f"<h2>{num_users}</h2>")
