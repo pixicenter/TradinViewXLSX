@@ -1,67 +1,87 @@
 <div class="bg-white p-6 rounded-lg shadow-md">
     <h2 class="text-2xl font-bold text-gray-800 mb-4">Instrucțiuni de Utilizare</h2>
 
+    <!-- 1. Încărcarea fișierelor -->
     <h3 class="text-lg font-semibold text-gray-700 mt-4">1. Încărcarea fișierelor</h3>
     <p class="text-gray-600">
         - Apasă pe butonul <strong>"Alege fișierele CSV"</strong> și selectează fișierele dorite.<br>
         - Selectează tipul de date (PPI, PMI, MOM etc.) din dropdown.<br>
         - Apasă <strong>"Încărcare"</strong> și așteaptă confirmarea.<br>
-        - După fiecare încărcare, fișierele CSV încărcate ulterior precum și fișierele XLSX generate vor fi <span class="text-red-500">șterse</span>.<br>
+        - După fiecare încărcare, fișierele CSV încărcate ulterior și fișierele XLSX generate vor fi <span class="text-red-500">șterse</span>.<br>
         - Lista de fișiere încărcate va fi actualizată automat.
     </p>
-   
-    <h3 class="text-lg font-semibold text-gray-700 mt-4">Structura Fisiere CSV pentru Tip Fisier generat</h3>
+
+    <!-- 2. Structura Fișierelor CSV -->
+    <h3 class="text-lg font-semibold text-gray-700 mt-4">Structura Fişierelor CSV pentru Tipul Fisierului Generat</h3>
     <p class="text-gray-500">
-        Fiecare tip de fisier are nevoie de o structura specifica si de un numar de fisiere CSV pentru a genera fisierul XLSX.<br>
-        - Pentru <strong class="text-green-500">FULL PC PROCENT</strong> generatorul are nevoie de o pereche de <strong>2 fisiere</strong>, de genul <b>*****, 1M.csv</b> si <b>*****, 3M.csv</b>. Perechea este validata daca denumirea <b>"*****"</b> este aceeasi. <br>
-        <i>De exemplu <b>IndicatorSpecific, 1M.csv</b> si <b>IndicatorSpecific, 3M.csv</b></i> <br>
-        - Pentru <strong class="text-green-500">PMI PC Valoare Nominala</strong> generatorul are nevoie de o pereche de <strong>2 fisiere</strong>, de genul <b>*****, 1M.csv</b> si <b>*****, 3M.csv</b>. Perechea este validata daca denumirea <b>"*****"</b> este aceeasi. <br>
-        <i>De exemplu <b>IndicatorSpecific, 1M.csv</b> si <b>IndicatorSpecific, 3M.csv</b></i> <br>
-        - Pentru <strong class="text-green-500">MOM YOY</strong> generatorul are nevoie de o pereche de <strong>2 fisiere</strong>, de genul <b>*****, MM.csv</b> si <b>*****, YY.csv</b>. Perechea este validata daca denumirea <b>"*****"</b> este aceeasi. <br>
-        <i>De exemplu <b>DenumireFisier, MM.csv</b> si <b>DenumireFisier, YY.csv</b></i> <br>
-        - Pentru <strong class="text-green-500">GDP Year</strong> nu exista o formula specifica a denumirii pentru tipul de CSV. Pentru fiecare fisier incarcat, genereaza un fisier XLSX.<br>
-        - Pentru <strong class="text-green-500">Real GDP Year</strong> nu exista o formula specifica a denumirii pentru tipul de CSV. Pentru fiecare fisier incarcat, genereaza un fisier XLSX.<br>
-        - Pentru fiecare tip, pot fi incarcate mai multe fisiere in acelasi timp, daca resepecta structura de numire specifica tipului de fisier dorit.
+        Fiecare tip de fișier necesită o structură specifică și un anumit număr de fișiere CSV pentru a genera fișierul XLSX.<br>
+        
+        - **Pentru <strong class="text-green-500">FULL PC PROCENT</strong>** generatorul necesită o pereche de <strong>2 fișiere</strong>: 
+          <br> <b>*****, 1M.csv</b> și <b>*****, 3M.csv</b>. Perechea este validată dacă denumirea <b>"*****"</b> este aceeași. 
+          <br><i>Exemplu: <b>IndicatorSpecific, 1M.csv</b> și <b>IndicatorSpecific, 3M.csv</b></i><br>
+        
+        - **Pentru <strong class="text-green-500">PMI PC Valoare Nominală</strong>** generatorul necesită o pereche de <strong>2 fișiere</strong>: 
+          <br> <b>*****, 1M.csv</b> și <b>*****, 3M.csv</b>. Perechea este validată dacă denumirea <b>"*****"</b> este aceeași. 
+          <br><i>Exemplu: <b>IndicatorSpecific, 1M.csv</b> și <b>IndicatorSpecific, 3M.csv</b></i><br>
+        
+        - **Pentru <strong class="text-green-500">MOM YOY</strong>** generatorul necesită o pereche de <strong>2 fișiere</strong>: 
+          <br> <b>*****, MM.csv</b> și <b>*****, YY.csv</b>. Perechea este validată dacă denumirea <b>"*****"</b> este aceeași. 
+          <br><i>Exemplu: <b>DenumireFisier, MM.csv</b> și <b>DenumireFisier, YY.csv</b></i><br>
+        
+        - **Pentru <strong class="text-green-500">GDP Year</strong>** nu există o formulă specifică de denumire pentru tipul de CSV. 
+          Fiecare fișier încărcat generează un fișier XLSX.<br>
+        
+        - **Pentru <strong class="text-green-500">Real GDP Year</strong>** nu există o formulă specifică de denumire pentru tipul de CSV. 
+          Fiecare fișier încărcat generează un fișier XLSX.<br>
+
+        - Pentru fiecare tip de fișier, pot fi încărcate mai multe fișiere simultan, atâta timp cât respectă structura de denumire specifică.
     </p>
 
+    <!-- 3. Procesarea fișierelor -->
     <h3 class="text-lg font-semibold text-gray-700 mt-4">2. Procesarea fișierelor</h3>
     <p class="text-gray-600">
         - După încărcarea fișierelor, apasă pe <strong>"Începe Procesarea"</strong>.<br>
         - Procesul va începe, iar un indicator animat va apărea pe ecran.<br>
         - La finalizarea procesării:
-          <ul class="list-disc list-inside">
-              <li>Fișierele vor fi generate și listate.</li>
-              <li>Logurile vor mesajele de procesare precum și erorile.</li>
-          </ul>
-        - După procesare, butonul <strong>"Descarcă fișiere"</strong> va fi <span class="text-green-500">activat automat</span> pentru a descărca toate fișierele XLSX generate într-o arhivă ZIP.
+        <ul class="list-disc list-inside">
+            <li>Fișierele vor fi generate și listate.</li>
+            <li>Logurile vor conține mesaje de procesare și erorile întâmpinate.</li>
+        </ul>
+        - După procesare, butonul <strong>"Descarcă fișiere"</strong> va fi <span class="text-green-500">activat automat</span> pentru a descărca toate fișierele XLSX generate din sesiunea curentă într-o arhivă ZIP.
     </p>
 
+    <!-- 4. Descărcarea fișierelor -->
     <h3 class="text-lg font-semibold text-gray-700 mt-4">3. Descărcarea fișierelor</h3>
     <p class="text-gray-600">
         - După procesare, fișierele vor apărea în lista de fișiere generate.<br>
         - Poți descărca fiecare fișier generat individual sau<br>
-        - Apasă pe <strong>"Descărcare Toate"</strong> pentru a obține arhiva Zip cu toate fișierele XLSX generate.<br>
-        - După descărcare, fișierele rămân disponibile până la ștergerea manuală sau până vor fi încărcate noi fișiere CSV pe server.
+        - Apasă pe <strong>"Descărcare Toate"</strong> pentru a obține arhiva ZIP cu toate fișierele XLSX generate.<br>
+        - După descărcare, fișierele rămân disponibile până la ștergerea manuală sau până când noi fișiere CSV sunt încărcate pe server.
     </p>
 
+    <!-- 5. Ștergerea fișierelor -->
     <h3 class="text-lg font-semibold text-gray-700 mt-4">4. Ștergerea fișierelor</h3>
     <p class="text-gray-600">
         - Dacă vrei să ștergi toate fișierele încărcate și generate de pe server, apasă pe <strong>"Șterge Fișiere"</strong>.<br>
-        - Se va afișa un mesaj de confirmare pentru ștergere.<br>
+        - Se va afișa un mesaj de confirmare pentru ștergerea fișierelor.<br>
         - După ștergere, butonul <strong>"Descarcă fișiere"</strong> va fi dezactivat.<br>
-        - Dacă încarci noi fișiere după ștergere, procesul începe de la zero.
+        - Dacă încarci noi fișiere după ștergere, procesul va începe de la zero.
     </p>
 
+    <!-- 6. Log Procesare -->
     <h3 class="text-lg font-semibold text-gray-700 mt-4">5. Log Procesare</h3>
     <p class="text-gray-600">
         - În cazul în care apar probleme, verifică secțiunea <strong>Log Procesare</strong>.<br>
         - Log-ul este actualizat în timp real și conține informații despre succesul sau eșecul procesării.<br>
         - Dacă întâmpini o eroare, asigură-te că fișierele încărcate sunt corecte și încearcă din nou.<br>
         - Log-ul este resetat automat la fiecare nouă procesare.<br>
-        - Dacă apar alte Erori, vorbiți cu Raluca pentru a-mi comunica.
+        - Dacă apar alte erori, contactează-l pe Raluca pentru asistență.
     </p>
 </div>
+
+<!-- Buton Continuare -->
 <br>
+
 <button class="flex justify-center items-center w-full bg-blue-500 hover:bg-blue-600 py-2 rounded-lg text-white"
                 hx-get="/main" hx-target="#main-content">
                 <i data-lucide="chart-scatter" class="w-6 h-6 md:inline justify-center text-center"></i>
